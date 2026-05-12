@@ -1,0 +1,9 @@
+Package: com.local.updateblocker123
+Name: UpdateBlocker123
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Block in-app update prompt for 123云盘 2.1.5 by spoofing local version and update prompt timestamp.
+Maintainer: local
+Author: local
+Section: Tweaks
+Depends: mobilesubstrate

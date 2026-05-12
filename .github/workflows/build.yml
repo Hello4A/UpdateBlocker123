@@ -1,0 +1,47 @@
+name: Build UpdateBlocker123
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Theos
+        shell: bash
+        run: |
+          brew update
+          brew install ldid xz
+          export THEOS="$HOME/theos"
+          git clone --recursive https://github.com/theos/theos.git "$THEOS"
+          echo "THEOS=$THEOS" >> "$GITHUB_ENV"
+
+      - name: Build rootful package
+        shell: bash
+        run: |
+          make clean || true
+          make package FINALPACKAGE=1
+          mkdir -p out/rootful
+          find . -name "*.deb" -exec cp -v {} out/rootful/ \;
+          find ./.theos -name "*.dylib" -exec cp -v {} out/rootful/ \;
+
+      - name: Build rootless package
+        shell: bash
+        run: |
+          make clean || true
+          make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
+          mkdir -p out/rootless
+          find . -name "*.deb" -exec cp -v {} out/rootless/ \;
+          find ./.theos -name "*.dylib" -exec cp -v {} out/rootless/ \;
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: UpdateBlocker123-build
+          path: out/**
