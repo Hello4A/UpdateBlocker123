@@ -1,0 +1,10 @@
+{
+    Filter = {
+        Bundles = (
+            "com.mfcloudcalculate.123networkdisk"
+        );
+        Executables = (
+            "Runner"
+        );
+    };
+}
